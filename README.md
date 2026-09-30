@@ -38,10 +38,10 @@ Generation uses [Gemma 4](https://ollama.com/library/gemma4), specifically [gemm
 
 Choice at setup: E2B is the smallest effective-size Gemma 4 option; I selected the lightest E2B QAT build (4.3 GB versus the default Q4_K_M build at 7.2 GB) to leave room for Windows, apps, and retrieval within 16 GB. The saved runs demonstrate CPU execution. E4B was expected to be slower on this CPU, but was not benchmarked. `think=False` reduces CPU work spent on thinking.
 
-**One-time online installation (PowerShell):** replace the placeholder before running the clone command; no remote is currently configured.
+**One-time online installation (PowerShell):**
 
 ```powershell
-git clone "[TODO: repository clone URL]" C:\Users\pao_n\projects\personal-wiki
+git clone "https://github.com/paolanegrin-stack/personal-wiki-gemma.git" C:\Users\pao_n\projects\personal-wiki
 cd C:\Users\pao_n\projects\personal-wiki
 py -3.13 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
@@ -203,7 +203,7 @@ Under my expected routing labels, [v2 achieved 7/7 correct routes](outputs/chat-
 
 I ran the [checklist](tests/offline-run.md) with airplane mode on, WiFi off, no phone hotspot, and a fresh CLI process per command on September 29, approximately 22:10–22:30. Screenshots show airplane mode on; saved files record each run.
 
-The [offline report](outputs/offline-tests.md) links every run, stage timing, citation, and exact answer comparison. All four ask answers match v2; six of seven chat answers match. Held-out turn 2 adds a RACI sentence; both full versions are shown without grading.
+The [offline report](outputs/offline-tests.md) links every run, stage timing, citation, and exact answer comparison. All four ask answers match v2; six of seven chat answers match. Held-out turn 2 adds a RACI sentence. I checked it: the added sentence restates 03 §4 almost verbatim (a RACI matrix is a related way to clarify roles; the example uses R and S), so both versions are supported by the cited passage. Both full versions are shown in the offline report.
 
 | Offline command | Screenshots |
 |---|---|
