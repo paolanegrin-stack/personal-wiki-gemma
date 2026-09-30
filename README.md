@@ -69,7 +69,8 @@ Formatting checks do not prove every model claim is correct; review the notes
 against their cited sections.
 
 Existing notes are skipped unless `--force` is supplied. That flag replaces
-manual edits. The index and ingest log are regenerated on each run. A failed
+manual edits. An existing index is also preserved unless `--force` is supplied; a missing index
+is created. The ingest log is rewritten on each run. A failed
 note is logged and not saved; later notes are still attempted. Rerun normally
 to resume after resolving errors. Unknown wikilinks are converted to plain text
 and recorded in `outputs/ingest-log.md`. The index lists only notes that exist.
@@ -156,3 +157,12 @@ Routing and rewriting use temperature 0, seed 42, think=False, and short token
 limits; answers use the existing ask generation settings. Model outputs are not
 automatically graded. The model may still route or rewrite incorrectly; raw
 routing output and warnings are retained for review.
+
+## Offline verification preparation
+
+Follow `tests/offline-run.md` yourself with WiFi off. The checklist has not been
+executed as an offline test by Codex. Plain `wiki ingest` rebuilds chunks and
+embeddings, skips all existing notes without link cleanup or rewriting, preserves
+an existing index, and rewrites outputs/ingest-log.md. Missing planned notes are
+still generated locally. Use `--force` only when you intend to replace notes and
+the index. The previously committed ingest log can be recovered from Git.

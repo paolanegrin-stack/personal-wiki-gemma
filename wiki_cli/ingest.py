@@ -136,8 +136,10 @@ def render_note(note, folder, title, sections, created):
     return "\n".join(header + body) + "\n"
 
 
-def write_index():
-    """Deterministic index descriptions come from the approved plan, not extra model calls."""
+def write_index(force=False):
+    """Create the index; preserve an existing index unless force is explicit."""
+    if config.INDEX_PATH.exists() and not force:
+        return False
     lines = ["# Personal Wiki", "", "Study Project Management using source-grounded class notes.", ""]
     for folder in ("Concepts", "Selection", "Initiation", "Cases"):
         lines.extend([f"## {folder}", ""])
@@ -145,7 +147,13 @@ def write_index():
             if category == folder and (config.WIKI_DIR / folder / f"{title}.md").exists():
                 lines.append(f"- [[{title}]] — {description}")
         lines.append("")
-    config.INDEX_PATH.write_text("\n".join(lines), encoding="utf-8")
+    try:
+        # Exclusive creation also protects an index created during this function.
+        with config.INDEX_PATH.open("w" if force else "x", encoding="utf-8") as handle:
+            handle.write("\n".join(lines))
+    except FileExistsError:
+        return False
+    return True
 
 
 def save_embeddings(chunks, client, record=print):
@@ -249,7 +257,10 @@ def ingest(force=False):
                 message = f"{folder}/{title}.md: {error} ({perf_counter() - note_started:.2f} seconds)"
                 errors.append(message)
                 record("ERROR: " + message)
-        write_index()
+        if write_index(force=force):
+            record("Wrote vault/index.md.")
+        else:
+            record("Skipped vault/index.md (existing; use --force to replace it).")
     except (Exception, KeyboardInterrupt) as error:
         message = str(error) or "Interrupted by user"
         errors.append(message)

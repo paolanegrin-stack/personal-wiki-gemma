@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import numpy as np
 from wiki_cli import config
-from wiki_cli.ingest import ingest, read_chunks, clean_links, render_note, clean_related_notes
+from wiki_cli.ingest import ingest, read_chunks, clean_links, render_note, clean_related_notes, write_index
 
 
 class IngestTests(unittest.TestCase):
@@ -40,6 +40,20 @@ class IngestTests(unittest.TestCase):
         self.assertEqual(names[0], "Example")  # The input list is not mutated.
         self.assertEqual(clean_related_notes(kept, "Example"), (kept, []))
         self.assertEqual(clean_related_notes([], "Example"), ([], []))
+
+    def test_index_creation_preservation_and_force(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            index = root / "index.md"
+            with patch.multiple(config, INDEX_PATH=index, WIKI_DIR=root / "wiki"):
+                self.assertTrue(write_index())
+                self.assertTrue(index.read_text().startswith("# Personal Wiki"))
+                index.write_text("A manually reviewed index")
+                before = index.read_bytes()
+                self.assertFalse(write_index())
+                self.assertEqual(index.read_bytes(), before)
+                self.assertTrue(write_index(force=True))
+                self.assertNotEqual(index.read_bytes(), before)
 
     def test_skip_force_and_embedding_alignment(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -77,12 +91,26 @@ class IngestTests(unittest.TestCase):
                 self.assertEqual(saved["chunks"][0]["source_file"], "source.md")
                 self.assertEqual(np.load(paths["DATA_DIR"] / "embeddings.npy").shape, (1, 2))
                 target.write_text("Manual edits", encoding="utf-8")
+                paths["INDEX_PATH"].write_text("Reviewed index", encoding="utf-8")
+                index_mtime = paths["INDEX_PATH"].stat().st_mtime_ns
+                note_mtime = target.stat().st_mtime_ns
+                (paths["DATA_DIR"] / "chunks.json").write_text("{}")
+                np.save(paths["DATA_DIR"] / "embeddings.npy", [[0., 0.]])
+                embed_calls = client.embed.call_count
                 self.assertEqual(ingest(), 0)
                 self.assertEqual(target.read_text(), "Manual edits")
+                self.assertEqual(target.stat().st_mtime_ns, note_mtime)
+                self.assertEqual(paths["INDEX_PATH"].read_text(), "Reviewed index")
+                self.assertEqual(paths["INDEX_PATH"].stat().st_mtime_ns, index_mtime)
+                self.assertEqual(client.embed.call_count, embed_calls + 2)
+                self.assertEqual(len(json.loads((paths["DATA_DIR"] / "chunks.json").read_text())["chunks"]), 1)
+                np.testing.assert_allclose(np.load(paths["DATA_DIR"] / "embeddings.npy"), [[0.25, 0.75]])
+                self.assertIn("Skipped vault/index.md", (paths["OUTPUTS_DIR"] / "ingest-log.md").read_text())
                 self.assertEqual(client.generate.call_count, 1)
                 self.assertEqual(ingest(force=True), 0)
                 self.assertEqual(client.generate.call_count, 2)
                 self.assertNotEqual(target.read_text(), "Manual edits")
+                self.assertNotEqual(paths["INDEX_PATH"].read_text(), "Reviewed index")
                 self.assertEqual(raw.read_bytes(), original)
                 note["summary_sources"] = ["unapproved"]
                 with self.assertRaises(ValueError):
