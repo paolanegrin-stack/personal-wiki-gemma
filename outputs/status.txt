@@ -1,0 +1,8 @@
+Ollama server: http://localhost:11434
+Generation model: gemma4:e2b-it-qat
+Embedding model: embeddinggemma
+Ollama version: 0.34.4
+Both models are installed.
+Running a short local generation (thinking disabled)...
+Test response: The local wiki is ready.
+Generation time: 17.22 seconds (includes model loading if needed)

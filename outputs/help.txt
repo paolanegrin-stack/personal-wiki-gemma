@@ -1,0 +1,20 @@
+usage: wiki [-h] COMMAND ...
+
+Personal wiki using local Ollama models. Step 1: help and status only.
+
+positional arguments:
+  COMMAND
+    status    Check local Ollama and both models; time a test response. No
+              inputs.
+    ingest    Stub: ingest notes from vault/raw. No inputs.
+    search    Stub: search notes. Required: QUERY (quote multiple words).
+    ask       Stub: answer from notes. Required: QUESTION in quotes.
+    chat      Stub: start an interactive conversation. No inputs.
+    help      Show this command overview. No inputs.
+
+options:
+  -h, --help  show this help message and exit
+
+Examples: wiki status | wiki ingest | wiki search "project charter" | wiki ask
+"What is a project?" | wiki chat. Use wiki COMMAND --help for command-specific
+inputs.

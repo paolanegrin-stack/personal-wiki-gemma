@@ -1,0 +1,25 @@
+# Python environment and generated files
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Machine-generated retrieval data stays outside the vault and out of Git
+/data/
+
+# Local model weights and caches (Ollama normally stores these outside this repo)
+.ollama/
+models/
+*.gguf
+*.ggml
+*.safetensors
+*.pt
+*.pth
+*.onnx
+*.bin
+
+# Local secrets, if ever present
+.env

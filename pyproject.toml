@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "personal-wiki-cli"
+version = "0.1.0"
+description = "A simple offline personal wiki harness using local Ollama models"
+requires-python = ">=3.13"
+dynamic = ["dependencies"]
+
+# pip creates the 'wiki' terminal command from this function.
+[project.scripts]
+wiki = "wiki_cli.cli:main"
+
+[tool.setuptools]
+packages = ["wiki_cli"]
+
+# Keep dependency declarations in one place.
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
