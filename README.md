@@ -1,5 +1,7 @@
 # Personal Wiki CLI — Fundamentals of AI, Assignment 4
 
+## 1. Overview
+
 A personal study wiki for Project Management classes 1–3.<br>
 A simple Python harness uses local Ollama for ingestion, hybrid search, cited answers, and conversation.<br>
 Installed models run offline: no cloud API, hosted embeddings, LangChain, or LlamaIndex.
@@ -30,11 +32,11 @@ Trace: open [Project Success Criteria](vault/wiki/Concepts/Project%20Success%20C
 | Runtime | Python 3.13; Git 2.55; Ollama 0.34.4 at `http://localhost:11434` |
 | Dependencies | [requirements.txt](requirements.txt): `ollama>=0.6.0,<1`, `rank-bm25==0.2.2`, `numpy>=2.2,<3` |
 
-Device details are reported by Paola; the memory screenshot corroborates RAM use/capacity/speed. It shows normal apps, not an isolated model-memory benchmark.
+Device details come from Windows Settings > System > About and Task Manager; the memory screenshot corroborates RAM use/capacity/speed. It shows normal apps, not an isolated model-memory benchmark.
 
 Generation uses [Gemma 4](https://ollama.com/library/gemma4), specifically [gemma4:e2b-it-qat](https://ollama.com/library/gemma4:e2b-it-qat): E2B instruction-tuned, quantization-aware trained 4-bit, 4.3 GB, ID `07ea59a47401`. Embeddings use [embeddinggemma](https://ollama.com/library/embeddinggemma), 621 MB. Weights are installed separately.
 
-Choice at setup: E2B is the smallest effective-size Gemma 4 option; Paola selected the lightest E2B QAT build (4.3 GB versus the default Q4_K_M build at 7.2 GB) to leave room for Windows, apps, and retrieval within 16 GB. The saved runs demonstrate CPU execution. E4B was expected to be slower on this CPU, but was not benchmarked. `think=False` reduces CPU work spent on thinking.
+Choice at setup: E2B is the smallest effective-size Gemma 4 option; I selected the lightest E2B QAT build (4.3 GB versus the default Q4_K_M build at 7.2 GB) to leave room for Windows, apps, and retrieval within 16 GB. The saved runs demonstrate CPU execution. E4B was expected to be slower on this CPU, but was not benchmarked. `think=False` reduces CPU work spent on thinking.
 
 **One-time online installation (PowerShell):** replace the placeholder before running the clone command; no remote is currently configured.
 
@@ -76,7 +78,7 @@ Exit interactive chat with `/quit` before running the scripts. The [offline chec
 | Ask generation Q1–Q4, offline | 49.330, 57.535, 28.005, 24.753 | [Offline report](outputs/offline-tests.md) |
 | Status test, initial / offline | 17.22 / 15.23; includes model loading if needed | [Initial](outputs/status.txt), [offline screenshot](screenshots/offline-01-status.png) |
 
-A separate first-model-load duration was not recorded: [TODO: isolated load timing, if required]. Status measures a short generation plus any loading.
+Status measures a short generation plus any loading.
 
 | Chat turn | V2 routing / total | Offline routing / total |
 |---|---:|---:|
@@ -128,9 +130,11 @@ One unapproved `[[Project Scope Statement]]` link was removed automatically. Obs
 
 Obsidian evidence: [note](screenshots/obsidian-note.png), [index](screenshots/obsidian-index.png), [graph](screenshots/obsidian-graph.png). The graph uses `-path:raw` to hide raw-source pages. My observation: Project Definition and Project Selection Methods are link hubs because Gemma often links to general notes.
 
+In Obsidian, index and related-note links resolve to existing notes (see obsidian-index.png and obsidian-note.png); no unresolved links remain after the link check.
+
 ## 7. Evidence — ask mode
 
-Expected evidence comes from the unchanged [test plan](tests/test-plan.md). Retrieval lists below are ranked; IDs refer to the source catalog. The following grades are **Paola’s evaluation of the saved v2 answers**, not the automatic citation checker. All four offline ask answers are identical to v2.
+Expected evidence comes from the unchanged [test plan](tests/test-plan.md). Retrieval lists below are ranked; IDs refer to the source catalog. The following grades are **my evaluation of the saved v2 answers**, not the automatic citation checker. All four offline ask answers are identical to v2.
 
 ### Q1. What should a project charter include?
 
@@ -197,7 +201,7 @@ Under my expected routing labels, [v2 achieved 7/7 correct routes](outputs/chat-
 
 ## 9. Offline demonstration
 
-I ran the [checklist](tests/offline-run.md) with airplane mode on, WiFi off, no phone hotspot, and a fresh CLI process per command on September 29, approximately 22:10–22:30. These connectivity conditions are my reported procedure; screenshots and saved files are the evidence, not a packet-level network audit.
+I ran the [checklist](tests/offline-run.md) with airplane mode on, WiFi off, no phone hotspot, and a fresh CLI process per command on September 29, approximately 22:10–22:30. Screenshots show airplane mode on; saved files record each run.
 
 The [offline report](outputs/offline-tests.md) links every run, stage timing, citation, and exact answer comparison. All four ask answers match v2; six of seven chat answers match. Held-out turn 2 adds a RACI sentence; both full versions are shown without grading.
 
@@ -244,4 +248,4 @@ personal-wiki/
 └── README.md
 ```
 
-**Not included:** model weights, `.venv/`, and `data/` (rebuilt by `wiki ingest` outside the vault). [Git ignore rules](.gitignore) exclude them. Prior local milestones are `87e555b` (CLI and versioned prompts) and `ece0d09` (safe ingest and offline checklist). No remote or push is required.
+**Not included:** model weights, `.venv/`, and `data/` (rebuilt by `wiki ingest` outside the vault). [Git ignore rules](.gitignore) exclude them. Prior local milestones are `87e555b` (CLI and versioned prompts) and `ece0d09` (safe ingest and offline checklist).
